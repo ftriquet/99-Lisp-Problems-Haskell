@@ -196,7 +196,7 @@ diffSelectGeneric n range = diffSelect' n range []
                   in diffSelect' (n - 1) (beg ++ end) (res ++ [val])
 
 -- Problem 25
-rndPermu :: (Eq a) =>  [a] -> IO [a]
+rndPermu :: [a] -> IO [a]
 rndPermu [] = return []
 rndPermu xs = diffSelectGeneric (length xs) xs
 
