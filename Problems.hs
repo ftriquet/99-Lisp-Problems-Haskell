@@ -200,6 +200,21 @@ rndPermu :: [a] -> IO [a]
 rndPermu [] = return []
 rndPermu xs = diffSelectGeneric (length xs) xs
 
+-- Problem 26
+combinations :: (Eq a) => Int -> [a] -> [[a]]
+combinations 0 _  = [[]]
+combinations _ [] = [[]]
+combinations n xs | n > length xs = []
+combinations n xs = concatMap (lol xs) xs
+    where lol xs x = map (\e -> x:e) (combinations (n - 1) (removeElem x xs))
+
+removeElem :: (Eq a) => a -> [a] -> [a]
+removeElem _ [] = []
+removeElem e xs = removeElem' e [] xs
+    where removeElem' e acc [] = acc
+          removeElem' e acc (x:xs) | x == e    = removeElem' e (acc ++ xs)   []
+                                   | otherwise = removeElem' e (acc ++ x:[]) xs
+
 
 main :: IO ()
 main = undefined
