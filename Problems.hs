@@ -73,7 +73,6 @@ pack (xs) = pack' [] xs
 encode :: (Eq a) => [a] -> [(Int, a)]
 encode xs = map toTuple (pack xs)
     where toTuple (x:xs) = ((length xs + 1), x)
-encode _ = []
 
 -- Problem 11
 data CoefValue a = Single a
@@ -179,6 +178,31 @@ rndSelect xs n = rndSelect' (return []) xs n
               x <- (getStdRandom (randomR (0, (length xs) - 1)))
               let value = xs!!x
                   in rndSelect' (fmap (\ys -> ys ++ [value]) res) xs (n - 1)
+
+-- Problem 24
+diffSelect :: Int -> Int -> IO [Int]
+diffSelect n bound = diffSelectGeneric n [1..bound]
+
+
+diffSelectGeneric :: (Eq a) => Int -> [a] -> IO [a]
+diffSelectGeneric 0 _ = return []
+diffSelectGeneric n range = diffSelect' n range []
+    where diffSelect' _ [] res = return res
+          diffSelect' 0 _  res = return res
+          diffSelect' n range res = do
+              index <- (getStdRandom (randomR (0, (length range) - 1)))
+              let safeInit :: [a] -> [a]
+                  safeInit [] = []
+                  safeInit xs = init xs
+                  val = range!!index
+                  (beg, (_:end)) = break (\e -> e == val) range
+                  in diffSelect' (n - 1) (beg ++ end) (res ++ [val])
+
+-- Problem 25
+rndPermu :: (Eq a) =>  [a] -> IO [a]
+rndPermu [] = return []
+rndPermu xs = diffSelectGeneric (length xs) xs
+
 
 main :: IO ()
 main = undefined
