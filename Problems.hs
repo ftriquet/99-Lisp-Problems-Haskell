@@ -184,18 +184,15 @@ diffSelect :: Int -> Int -> IO [Int]
 diffSelect n bound = diffSelectGeneric n [1..bound]
 
 
-diffSelectGeneric :: (Eq a) => Int -> [a] -> IO [a]
+diffSelectGeneric :: Int -> [a] -> IO [a]
 diffSelectGeneric 0 _ = return []
 diffSelectGeneric n range = diffSelect' n range []
     where diffSelect' _ [] res = return res
           diffSelect' 0 _  res = return res
           diffSelect' n range res = do
               index <- (getStdRandom (randomR (0, (length range) - 1)))
-              let safeInit :: [a] -> [a]
-                  safeInit [] = []
-                  safeInit xs = init xs
-                  val = range!!index
-                  (beg, (_:end)) = break (\e -> e == val) range
+              let val = range!!index
+                  (beg, end) = Main.split range index
                   in diffSelect' (n - 1) (beg ++ end) (res ++ [val])
 
 -- Problem 25
