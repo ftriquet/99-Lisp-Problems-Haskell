@@ -201,13 +201,18 @@ rndPermu [] = return []
 rndPermu xs = diffSelectGeneric (length xs) xs
 
 -- Problem 26
--- FIXME
 combinations :: (Eq a) => Int -> [a] -> [[a]]
 combinations 0 _  = [[]]
 combinations _ [] = [[]]
 combinations n xs | n > length xs = []
-combinations n (x:xs) = map (\c -> x:c) $ combinations n xs
+combinations n (x:xs) = (map (\c -> x:c) $ combinations (n - 1) xs) -- x + c(n - 1) without x
+                        ++ if n < length xs + 1                     -- c(n) without x
+                              then combinations n xs
+                              else []                               -- no c(n) left
 
+-- Problem 27
+group3 :: [a] -> [[a]]
+group3 _ = []
 
 removeElem :: (Eq a) => a -> [a] -> [a]
 removeElem _ [] = []
