@@ -1,6 +1,6 @@
 import System.Random
 -- Problem 1
-myLast :: (Show a, Eq a) =>  [a] -> Maybe a
+myLast :: (Eq a) =>  [a] -> Maybe a
 myLast [] = Nothing
 myLast [x] = Just x
 myLast (x:xs) = myLast xs
@@ -201,7 +201,7 @@ rndPermu [] = return []
 rndPermu xs = diffSelectGeneric (length xs) xs
 
 -- Problem 26
-combinations :: (Eq a) => Int -> [a] -> [[a]]
+combinations :: Int -> [a] -> [[a]]
 combinations 0 _  = [[]]
 combinations _ [] = [[]]
 combinations n xs | n > length xs = []
@@ -211,8 +211,15 @@ combinations n (x:xs) = (map (\c -> x:c) $ combinations (n - 1) xs) -- x + c(n -
                               else []                               -- no c(n) left
 
 -- Problem 27
-group3 :: [a] -> [[a]]
-group3 _ = []
+combinationRem :: Int -> [a] -> [([a], [a])]
+combinationRem 0 xs     = [([], xs)]
+combinationRem _ []     = []
+combinationRem n (x:xs) = minusOne ++ same
+    where minusOne = map (\(sel, rem) -> (x:sel, rem)) $ combinationRem (n - 1) xs  -- x + c(n - 1) without x
+          same     = map (\(sel, rem) -> (sel, x:rem)) $ combinationRem n xs        -- add x to remaining
+
+group3 :: (Int, Int, Int) -> [a] -> [[[a]]]
+group3 (a, b, c) xs = []
 
 removeElem :: (Eq a) => a -> [a] -> [a]
 removeElem _ [] = []
